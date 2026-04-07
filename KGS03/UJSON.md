@@ -1,16 +1,17 @@
-# KGS03 — Unsafe JSON construction in authorization request
+# KGS03 Unsafe JSON construction in authorization request
 
 ## What is happening
 
 The root cause is in `UserAuthClient.cc`. The authorization request body is constructed by manual string concatenation, inserting the `token` and `topic` values directly into a JSON string literal:
 
-```cpp
+```
 const std::string reqBody{
     R"({"tk": ")" + token + R"(", "topic": ")" + topic + "\""}"}
 };
 ```
 
-Neither `token` nor `topic` is sanitized or escaped before insertion. Both values originate from the client. If either contains characters that have meaning in JSON — quotes, braces, backslashes, commas — the resulting string is no longer the intended object.
+Neither `token` nor `topic` is sanitized or escaped before insertion. 
+Both values originate from the client. If either contains characters that have meaning in JSON, quotes, braces, backslashes, commas — the resulting string is no longer the intended object.
 
 ## What a crafted value produces
 
@@ -22,7 +23,7 @@ abc", "extra":"injected
 
 produces the request body:
 
-```json
+```
 {"tk": "abc", "extra":"injected", "topic": "..."}
 ```
 
@@ -38,11 +39,13 @@ The authentication service sits between the GuiServer and the backend. The GuiSe
 
 The request body should be constructed with a JSON serialization library rather than by hand. Using `nlohmann::json`:
 
-```cpp
+```
 nlohmann::json body;
 body["tk"]    = token;
 body["topic"] = topic;
 const std::string reqBody = body.dump();
 ```
 
-`nlohmann::json` escapes quotes, backslashes, and control characters before serializing string values. The structure of the output is determined by the library, not by the content of the input. A token containing `"` or `}` becomes a safely encoded string value rather than a structural element.
+`nlohmann::json` escapes quotes, backslashes, and control characters before serializing string values. The structure of the output is determined by the library, not by the content of the input.
+
+A token containing `"` or `}` becomes a safely encoded string value rather than a structural element.
