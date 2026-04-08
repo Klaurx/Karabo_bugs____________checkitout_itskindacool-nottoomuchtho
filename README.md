@@ -1,6 +1,6 @@
 ### Karabo GuiServer Bugs
 
-(Reported to XFEL) Two issues found in the Karabo control framework GuiServer, affecting versions through 3.0.X-hotfix.
+(Reported to XFEL and patched) Two issues found in the Karabo control framework GuiServer, affecting versions through 3.0.X-hotfix.
 Both issues relate to how the server handles client session state and constructs outbound authorization requests.
 
 ### Contents
