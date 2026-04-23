@@ -15,3 +15,8 @@ Target: European XFEL Karabo Control Framework
 Components: GuiServerDevice.cc, UserAuthClient.cc
 
 Versions: through 3.0.X-hotfix
+
+Authors:
+Klaurx the divine
+Slowdive — ballad of the dead
+Gods of unique bugz.
